@@ -56,6 +56,26 @@ export function histories(
   }
 }
 
+export function listingChallenges(
+  state: Map<string, List<any>> = Map<string, List<any>>(),
+  action: AnyAction,
+): Map<string, List<any>> {
+  switch (action.type) {
+    case listingActions.ADD_OR_UPDATE_LISTING_CHALLENGE:
+      const list = state.get(action.data.address) || List();
+      const newState = state.set(
+        action.data.address,
+        list
+          .push(action.data)
+          .sort((a, b) => a.event.blockNumber! - b.event.blockNumber!)
+          .toList(),
+      );
+      return newState;
+    default:
+      return state;
+  }
+}
+
 export function applications(state: Set<string> = Set<string>(), action: AnyAction): Set<string> {
   switch (action.type) {
     case listingActions.ADD_OR_UPDATE_LISTING:

@@ -180,6 +180,11 @@ export async function grantAppeal(address: EthAddress): Promise<TwoStepEthTransa
   return tcr.grantAppeal(address);
 }
 
+export async function hasClaimedTokens(challengeID: number | BigNumber): Promise<boolean> {
+  const tcr = getTCR();
+  return tcr.hasClaimedTokens(ensureWeb3BigNumber(challengeID))
+}
+
 export async function requestVotingRights(numTokens: BigNumber): Promise<TwoStepEthTransaction> {
   const civil = getCivil();
   const tcr = civil.tcrSingletonTrusted();

@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import ChallengeHistory from "./ChallengeHistory";
 import ListingHistory from "./ListingHistory";
 import ListingDetail from "./ListingDetail";
 import ListingPhaseActions from "./ListingPhaseActions";
@@ -33,6 +34,7 @@ class ListingPage extends React.Component<ListingReduxProps & DispatchProp<any> 
         )}
         {appExistsAsNewsroom && <ListingPhaseActions listing={this.props.listing!} />}
         {!appExistsAsNewsroom && this.renderListingNotFound()}
+        <ChallengeHistory listing={this.props.match.params.listing} />
         <ListingHistory listing={this.props.match.params.listing} />
       </PageView>
     );
