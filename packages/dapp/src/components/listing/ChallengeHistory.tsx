@@ -20,7 +20,7 @@ export interface ChallengeHistoryProps {
 }
 
 export interface ChallengeHistoryReduxProps {
-  listingChallengeHistory: List<any>;
+  listingChallengesHistory: List<any>;
   listing: string;
 }
 
@@ -38,10 +38,6 @@ class ChallengeHistory extends React.Component<DispatchProp<any> & ChallengeHist
     };
   }
 
-  public componentWillReceiveProps(newProps: any): void {
-    console.log(newProps);
-  }
-
   public async componentDidMount(): Promise<void> {
     return this.initHistory();
   }
@@ -51,11 +47,10 @@ class ChallengeHistory extends React.Component<DispatchProp<any> & ChallengeHist
   }
 
   public render(): JSX.Element {
-    console.log(this.props);
     return (
       <ViewModule>
         <ViewModuleHeader>Challenge History</ViewModuleHeader>
-        {this.props.listingChallengeHistory.map((e, i) => {
+        {this.props.listingChallengesHistory.map((e, i) => {
           return <ChallengeEvent key={i} challengeData={e} />;
         })}
       </ViewModule>
@@ -74,6 +69,7 @@ class ChallengeHistory extends React.Component<DispatchProp<any> & ChallengeHist
     if (tcr) {
       const listingHelper = tcr.getListing(this.props.listing);
       const subscription = Observable.merge(
+        listingHelper.challenges(),
         listingHelper.failedChallenges(),
         listingHelper.successfulChallenges(),
       ).subscribe(this.handleSubscriptionReturn);
@@ -83,11 +79,14 @@ class ChallengeHistory extends React.Component<DispatchProp<any> & ChallengeHist
 }
 
 const mapToStateToProps = (state: State, ownProps: ChallengeHistoryProps): ChallengeHistoryReduxProps => {
-  const { listingChallenges } = state;
-  const listingChallengeHistory = listingChallenges.get(ownProps.listing) || List();
+  const { challenges, listingChallenges } = state;
+  const listingChallengesIDs = listingChallenges.get(ownProps.listing) || List();
+  const listingChallengesHistory = listingChallengesIDs.map((listingChallenge, i) => {
+      return challenges.get(listingChallenge![0]);
+    }).toList();
   return {
     ...ownProps,
-    listingChallengeHistory
+    listingChallengesHistory
   };
 };
 
@@ -101,22 +100,30 @@ class ChallengeEvent extends React.Component<DispatchProp<any> & ChallengeEventP
   }
 
   public render(): JSX.Element {
-    console.log(this.props);
-    const wrappedEvent = this.props.challengeData.event;
     return (
       <StyledDiv>
-        {new Date((wrappedEvent as any).timestamp * 1000).toUTCString()} - {this.props.challengeData.result}
-        {this.renderClaimRewards()}
+        <dl>
+          <dt>Challenge Initiated</dt>
+          <dd>{new Date(this.props.challengeData.challengeTimestamp * 1000).toUTCString()}</dd>
+          <dt>Challenger</dt>
+          <dd>{this.props.challengeData.challenger}</dd>
+          {this.props.challengeData.challengeResolvedTimestamp && this.renderResolvedChallenge()}
+        </dl>
       </StyledDiv>
     );
   }
 
-  private renderClaimRewards = (): JSX.Element => {
-    if (this.props.challengeData.isRewardAvailable) {
-      return <>Claim Rewards</>;
-    } else {
-      return <>Sorry, no rewards for you!</>;
-    }
+  private renderResolvedChallenge = (): JSX.Element => {
+    return (
+      <>
+        <dt>Resolved</dt>
+        <dd>{new Date(this.props.challengeData.challengeResolvedTimestamp * 1000).toUTCString()}</dd>
+        <dt>Succeeded</dt>
+        <dd>{this.props.challengeData.isSucceeded ? "Yes" : "No" }</dd>
+        <dt>Is Reward Available?</dt>
+        <dd>{this.props.challengeData.isRewardAvailable ? "Congratulations! Claim your rewards" : "Sorry, you chose poorly" }</dd>
+      </>
+    );
   }
 
 }

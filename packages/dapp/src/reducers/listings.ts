@@ -56,21 +56,45 @@ export function histories(
   }
 }
 
-export function listingChallenges(
-  state: Map<string, List<any>> = Map<string, List<any>>(),
+export function challenges(
+  state: Map<string, any> = Map<string, any>(),
   action: AnyAction,
-): Map<string, List<any>> {
+): Map<string, any> {
   switch (action.type) {
     case listingActions.ADD_OR_UPDATE_LISTING_CHALLENGE:
-      const list = state.get(action.data.address) || List();
-      const newState = state.set(
-        action.data.address,
-        list
-          .push(action.data)
-          .sort((a, b) => a.event.blockNumber! - b.event.blockNumber!)
-          .toList(),
-      );
-      return newState;
+      const challengeID = action.data.challengeID.toString();
+      const challenge = state.get(challengeID) || {};
+      if (action.data.eventData.event === "_Challenge") {
+        challenge.challengeTimestamp = action.data.eventData.timestamp;
+      }
+      if (["_ChallengeFailed", "_ChallengeSucceeded"].includes(action.data.eventData.event)) {
+        challenge.challengeResolvedTimestamp = action.data.eventData.timestamp;
+        challenge.isSucceeded = action.data.eventData.event === "_ChallengeSucceeded";
+        challenge.isRewardAvailable = action.data.isRewardAvailable;
+      }
+      return state.set(challengeID, { ...challenge, ...action.data.eventData.args });
+    default:
+      return state;
+  }
+}
+
+export function listingChallenges(
+  state: Map<string, List<[string, TimestampedEvent<any>]>> = Map<string, List<[string, TimestampedEvent<any>]>>(),
+  action: AnyAction,
+): Map<string, List<[string, TimestampedEvent<any>]>> {
+  switch (action.type) {
+    case listingActions.ADD_OR_UPDATE_LISTING_CHALLENGE:
+      if (action.data.eventData.event === "_Challenge") {
+        const list = state.get(action.data.address) || List();
+        return state.set(
+          action.data.address,
+          list
+            .push([action.data.challengeID.toString(), action.data.eventData])
+            .sort((a, b) => a[1].blockNumber! - b[1].blockNumber!)
+            .toList()
+        );
+      }
+      return state;
     default:
       return state;
   }
