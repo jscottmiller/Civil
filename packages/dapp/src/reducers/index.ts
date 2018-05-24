@@ -37,7 +37,7 @@ export interface State {
   newsrooms: Map<string, NewsroomWrapper>;
   currentUserNewsrooms: Set<string>;
   listings: Map<string, ListingWrapperWithExpiry>;
-  challenges: Map<string, any>,
+  challenges: Map<string, any>;
   listingChallenges: Map<string, List<[string, TimestampedEvent<any>]>>;
   histories: Map<string, List<TimestampedEvent<any>>>;
   applications: Set<string>;

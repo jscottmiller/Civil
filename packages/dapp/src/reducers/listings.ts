@@ -56,10 +56,7 @@ export function histories(
   }
 }
 
-export function challenges(
-  state: Map<string, any> = Map<string, any>(),
-  action: AnyAction,
-): Map<string, any> {
+export function challenges(state: Map<string, any> = Map<string, any>(), action: AnyAction): Map<string, any> {
   switch (action.type) {
     case listingActions.ADD_OR_UPDATE_LISTING_CHALLENGE:
       const challengeID = action.data.challengeID.toString();
@@ -91,7 +88,7 @@ export function listingChallenges(
           list
             .push([action.data.challengeID.toString(), action.data.eventData])
             .sort((a, b) => a[1].blockNumber! - b[1].blockNumber!)
-            .toList()
+            .toList(),
         );
       }
       return state;

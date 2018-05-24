@@ -182,7 +182,7 @@ export async function grantAppeal(address: EthAddress): Promise<TwoStepEthTransa
 
 export async function hasClaimedTokens(challengeID: number | BigNumber): Promise<boolean> {
   const tcr = getTCR();
-  return tcr.hasClaimedTokens(ensureWeb3BigNumber(challengeID))
+  return tcr.hasClaimedTokens(ensureWeb3BigNumber(challengeID));
 }
 
 export async function requestVotingRights(numTokens: BigNumber): Promise<TwoStepEthTransaction> {

@@ -81,12 +81,14 @@ class ChallengeHistory extends React.Component<DispatchProp<any> & ChallengeHist
 const mapToStateToProps = (state: State, ownProps: ChallengeHistoryProps): ChallengeHistoryReduxProps => {
   const { challenges, listingChallenges } = state;
   const listingChallengesIDs = listingChallenges.get(ownProps.listing) || List();
-  const listingChallengesHistory = listingChallengesIDs.map((listingChallenge, i) => {
+  const listingChallengesHistory = listingChallengesIDs
+    .map((listingChallenge, i) => {
       return challenges.get(listingChallenge![0]);
-    }).toList();
+    })
+    .toList();
   return {
     ...ownProps,
-    listingChallengesHistory
+    listingChallengesHistory,
   };
 };
 
@@ -119,13 +121,16 @@ class ChallengeEvent extends React.Component<DispatchProp<any> & ChallengeEventP
         <dt>Resolved</dt>
         <dd>{new Date(this.props.challengeData.challengeResolvedTimestamp * 1000).toUTCString()}</dd>
         <dt>Succeeded</dt>
-        <dd>{this.props.challengeData.isSucceeded ? "Yes" : "No" }</dd>
+        <dd>{this.props.challengeData.isSucceeded ? "Yes" : "No"}</dd>
         <dt>Is Reward Available?</dt>
-        <dd>{this.props.challengeData.isRewardAvailable ? "Congratulations! Claim your rewards" : "Sorry, you chose poorly" }</dd>
+        <dd>
+          {this.props.challengeData.isRewardAvailable
+            ? "Congratulations! Claim your rewards"
+            : "Sorry, you chose poorly"}
+        </dd>
       </>
     );
-  }
-
+  };
 }
 
 export default connect(mapToStateToProps)(ChallengeHistory);

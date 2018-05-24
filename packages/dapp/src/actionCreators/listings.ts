@@ -65,10 +65,14 @@ export const addOrUpdateListingChallenge: ActionCreator<ThunkAction<Promise<AnyA
 export const addOrUpdateListingChallenge = (address: string, e: TimestampedEvent<any>): any => {
   return async (dispatch: Dispatch<any>, getState: any): Promise<AnyAction> => {
     const challengeID = e.args.challengeID;
-    const challengeResult = (e.event === "_ChallengeFailed") ? "Failed" :
-      (e.event === "_ChallengeSucceeded") ? "Succeeded" :
-      (e.event === "_Challenge") ? "Challenge" :
-      "Unknown";
+    const challengeResult =
+      e.event === "_ChallengeFailed"
+        ? "Failed"
+        : e.event === "_ChallengeSucceeded"
+          ? "Succeeded"
+          : e.event === "_Challenge"
+            ? "Challenge"
+            : "Unknown";
     const isRewardAvailable = !!challengeID ? await hasClaimedTokens(challengeID) : false;
     return dispatch({
       type: listingActions.ADD_OR_UPDATE_LISTING_CHALLENGE,
@@ -78,7 +82,7 @@ export const addOrUpdateListingChallenge = (address: string, e: TimestampedEvent
         challengeID,
         result: challengeResult,
         isRewardAvailable,
-      }
+      },
     });
-  }
-}
+  };
+};
