@@ -1,23 +1,6 @@
 import * as React from "react";
-import styled from "styled-components";
 import { TwoStepEthTransaction } from "@joincivil/core";
-
-// TODO(nickreynolds): get colors from constants file
-const Button = styled.button`
-  background-color: #2b56ff;
-  font-family: "Libre Franklin", sans-serif;
-  font-weight: 700;
-  color: #ffffff;
-  border: none;
-  font-size: 18px;
-  text-align: center;
-  &.active {
-    color: #30e8bd;
-  }
-  &.disabled {
-    background-color: #c4c2c0;
-  }
-`;
+import { Button } from "@joincivil/components";
 
 export interface TransactionButtonState {
   name: string;
